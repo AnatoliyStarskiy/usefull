@@ -1,0 +1,93 @@
+/* Бокс с вращающейся тенью */
+
+body {
+    margin: 0;
+    /* Маргин 0 */
+    padding: 0;
+    /* Паддинг 0 */
+    background: #0e2136;
+    /* Фоновый цвет */
+    height: 100vh;
+    /* Высота 100% от высоты окна */
+    display: flex;
+    /* Флексбокс */
+    justify-content: center;
+    /* Выравнивание по горизонтали */
+    align-items: center;
+    /* Выравнивание по вертикали */
+}
+
+.box {
+    /* background убираем с родителя, чтобы перекрытие работало корректно */
+    background: transparent;
+    /* Фон теперь на ::after */
+    height: 200px;
+    /* Фиксированная высота */
+    aspect-ratio: 1/1;
+    /* Соотношение сторон 1 к 1 */
+    border-radius: 10px;
+    /* Скругление углов */
+    position: relative;
+    /* Относительное позиционирование */
+    display: flex;
+    /* Флексбокс */
+    justify-content: center;
+    /* Выравнивание по горизонтали */
+    align-items: center;
+    /* Выравнивание по вертикали */
+    z-index: 0;
+    /* Родителю не нужен высокий z-index */
+    border: #009dcd 2px solid;
+}
+
+/* Контент внутри .box должен быть выше псевдо-элементов */
+.box>* {
+    position: relative;
+    z-index: 2;
+}
+
+@property --deg {
+    syntax: '<angle>';
+    inherits: true;
+    initial-value: 0deg;
+}
+
+/* НИЖНИЙ слой: свечение/градиент под коробкой */
+.box::before {
+    content: '';
+    position: absolute;
+    /* Абсолютное позиционирование */
+    inset: 0;
+    /* Растянуть на весь .box */
+    border-radius: inherit;
+    /* Наследование скругления углов */
+    background: conic-gradient(from var(--deg) at center,
+            #00c3ff, #4d0199, #6300c6, #009dcd);
+    filter: blur(10px);
+    /* Размытие */
+    z-index: 0;
+    /* Ниже внутренней плитки */
+    animation: autoRotate 2s linear infinite;
+    /* Анимация вращения */
+}
+
+/* ВЕРХНИЙ внутренний слой: собственно «плитка» с фоном,
+   чуть меньшая, чтобы остался светящийся ободок */
+.box::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    /* Толщина ободка */
+    border-radius: calc(10px - 2px);
+    background: #142d4a;
+    /* Темно-синий фон, как у вас было */
+    z-index: 1;
+    /* Выше свечения, ниже контента */
+}
+
+/* Анимация вращения */
+@keyframes autoRotate {
+    to {
+        --deg: 360deg;
+    }
+}
