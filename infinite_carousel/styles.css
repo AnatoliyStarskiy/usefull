@@ -1,0 +1,46 @@
+/* Стили для Infinite Carousel */
+
+
+.carousel {
+    margin: 100px auto; /* Центрирование карусели */
+    width: 90%; /* Ширина карусели */
+    border: 5px solid red; /* Красная рамка для наглядности */
+    display: flex; /* Используем flexbox для выравнивания */
+    overflow-x: auto; /* Горизонтальная прокрутка */
+    gap: 1em; /* Расстояние между группами карточек */
+    scroll-behavior: smooth; /* Плавная прокрутка */
+}
+
+/* Стили для скрытия скроллбара */
+.carousel::-webkit-scrollbar { 
+    display: none; /* Скрываем стандартный скроллбар */
+}
+
+/* Стили для группы карточек */
+
+.group {
+    display: flex; /* Горизонтальное расположение карточек */
+    align-items: center; /* Вертикальное центрирование карточек */
+    justify-content: center; /* Горизонтальное центрирование карточек */
+    gap: 1em; /* Расстояние между карточками */
+    animation: spin 10s linear infinite; /* Анимация прокрутки */
+    padding-right: 1em; /* Отступ справа для визуального эффекта */
+}
+
+/* Стили для карточек */
+
+.card {
+    flex: 0 0 5em; /* Фиксированная ширина карточек */
+    height: 5em; /* Фиксированная высота карточек */
+    padding: 1em; /* Внутренний отступ */
+    background: cornflowerblue; /* Фоновый цвет карточек */
+    font-size: 3rem; /* Размер шрифта */
+    border-radius: 0.2em; /* Скругление углов */
+    text-align: center; /* Выравнивание текста по центру */
+    align-items: center; /* Вертикальное центрирование текста */
+}
+
+@keyframes spin {
+    from {translate: 0;}
+    to {translate: -100%;}
+}
