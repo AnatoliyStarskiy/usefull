@@ -1,0 +1,156 @@
+
+/*
+  :root — глобальный селектор для объявления CSS-переменных (custom properties)
+  --brand-color: основной цвет для оформления кнопки
+*/
+:root {
+    --brand-color: #4F46E5; /* Фиолетовый цвет бренда */
+}
+
+
+/*
+  body — базовые стили для всей страницы
+  min-height: 100vh;         // Минимальная высота — 100% окна браузера
+  min-height: 100dvh;        // То же, но с учётом динамических панелей на мобильных
+  padding: 1em;              // Внутренний отступ по краям
+  font-family: ...           // Основной шрифт
+  display: flex;             // Flex-контейнер для выравнивания содержимого
+  align-items: flex-start;   // Выравнивание по вертикали к верху
+  justify-content: flex-start; // Выравнивание по горизонтали к левому краю
+  gap: 12px;                 // Отступ между элементами
+*/
+body {
+    min-height: 100vh;           /* Минимальная высота окна */
+    min-height: 100dvh;          /* Для поддержки мобильных браузеров */
+    padding: 1em;                /* Внутренний отступ */
+    font-family: Poppins, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Шрифт */
+    display: flex;               /* Flexbox-контейнер */
+    align-items: flex-start;     /* Выравнивание по вертикали */
+    justify-content: flex-start; /* Выравнивание по горизонтали */
+    gap: 12px;                   /* Отступ между элементами */
+}
+
+
+/*
+  button — стили для кнопки меню
+  background-color: var(--brand-color); // Цвет фона из переменной
+  padding: .7rem 1.5rem;               // Внутренние отступы
+  border: 0;                           // Без рамки
+  border-radius: .3em;                 // Скругление углов
+  font: inherit;                       // Наследовать шрифт
+  font-weight: 500;                    // Полужирный
+  color: #fff;                         // Белый текст
+  cursor: pointer;                     // Курсор-рука при наведении
+  anchor-name: --menu-button;          // Имя якоря для anchor positioning (важно: совпадает с position-anchor у меню)
+*/
+button {
+    background-color: var(--brand-color); /* Цвет кнопки */
+    padding: .7rem 1.5rem;                /* Отступы */
+    border: 0;                            /* Без рамки */
+    border-radius: .3em;                  /* Скругление */
+    font: inherit;                        /* Наследовать шрифт */
+    font-weight: 500;                     /* Полужирный */
+    color: #fff;                          /* Белый текст */
+    cursor: pointer;                      /* Курсор-рука */
+    anchor-name: --menu-button;           /* Имя якоря для anchor positioning */
+}
+
+
+/*
+  #menu[popover] — базовые стили для popover-меню
+  width: max-content;        // Ширина по содержимому
+  border: 1px solid #ccc;    // Светло-серая рамка
+  border-radius: .5em;       // Скругление углов
+  padding: .5em;             // Внутренний отступ
+  background: #fff;          // Белый фон
+  display: none;             // По умолчанию скрыто (откроется через popover)
+  inset: auto;               // Сбросить стандартные отступы браузера
+  margin: 0;                 // Сбросить стандартные внешние отступы
+  position: fixed;           // popover всегда поверх всего, фиксированное позиционирование
+*/
+#menu[popover] {
+    width: max-content;      /* Ширина по содержимому */
+    border: 1px solid #ccc;  /* Рамка */
+    border-radius: .5em;     /* Скругление */
+    padding: .5em;           /* Внутренний отступ */
+    background: #fff;        /* Белый фон */
+    display: none;           /* Скрыто по умолчанию */
+    inset: auto;             /* Сбросить стандартные отступы браузера */
+    margin: 0;               /* Сбросить внешние отступы */
+    position: fixed;         /* Поверх всего */
+}
+
+
+/*
+  #menu:popover-open — когда popover открыт, показываем меню и используем grid для вертикального списка
+*/
+#menu:popover-open {
+    display: grid; /* Показываем меню, layout — grid */
+}
+
+
+/*
+  #menu a — стили для ссылок в меню
+  text-decoration: none;    // Без подчёркивания
+  padding: .7em 1.5em;      // Отступы
+  border-radius: .25em;     // Скругление
+  color: #000;              // Чёрный текст
+  white-space: nowrap;      // Не переносить строки
+*/
+#menu a {
+    text-decoration: none;  /* Без подчёркивания */
+    padding: .7em 1.5em;    /* Отступы */
+    border-radius: .25em;   /* Скругление */
+    color: #000;            /* Чёрный текст */
+    white-space: nowrap;    /* Не переносить строки */
+}
+
+
+/*
+  #menu a:hover — при наведении на пункт меню меняется фон
+*/
+#menu a:hover {
+    background-color: #eee; /* Светло-серый фон при наведении */
+}
+
+
+/*
+  Progressive enhancement: эти стили применяются только если браузер поддерживает anchor()
+  position-anchor: --menu-button; — привязывает popover к кнопке с anchor-name: --menu-button;
+  top: anchor(bottom); left: anchor(left); — меню появляется под кнопкой, выровнено по левому краю
+  position-try-fallbacks: ... — fallback-позиции, если основная невозможна (например, если не хватает места)
+
+  @position-try ... — альтернативные позиции для popover, если основная недоступна
+*/
+@supports (top: anchor(bottom)) {
+    #menu[popover] {
+        position-anchor: --menu-button; /* Привязка к кнопке */
+        top: anchor(bottom);            /* Появиться под кнопкой */
+        left: anchor(left);             /* Выровнено по левому краю кнопки */
+        position-try-fallbacks: --below-left, --below-right, --up-left, --up-right; /* fallback-позиции */
+    }
+
+    @position-try --below-right {
+        inset: unset;                  /* Сбросить стандартные отступы */
+        top: anchor(bottom);           /* Под кнопкой */
+        left: anchor(left);            /* По левому краю */
+    }
+
+    @position-try --below-left {
+        inset: unset;
+        top: anchor(bottom);
+        right: anchor(right);
+    }
+
+    @position-try --up-left {
+        inset: unset;
+        bottom: anchor(top);
+        right: anchor(right);
+    }
+
+    @position-try --up-right {
+        inset: unset;
+        bottom: anchor(top);
+        left: anchor(left);
+    }
+}

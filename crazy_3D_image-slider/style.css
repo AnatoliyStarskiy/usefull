@@ -1,0 +1,171 @@
+@import url('http://fonts.cdnfonts.com/css/ica-rubrik-black');
+@import url('http://fonts.cdnfonts.com/css/poppins');
+/*
+  Подключаем шрифты с внешнего CDN.
+  Почему так:
+  - для демо это быстро (не нужно хранить шрифты в проекте)
+  - но в реальном проекте лучше использовать https (иначе на https-сайте будут предупреждения о mixed content)
+    и/или self-host шрифты, чтобы не зависеть от стороннего сервиса.
+*/
+
+
+.banner {
+    /* `.banner` — контейнер-сцена на весь экран. */
+    width: 100%;
+    height: 100vh;
+    text-align: center;
+    /* Прячем всё, что "вылетает" за рамки (например, 3D-кольцо при вращении). */
+    overflow: hidden;
+    /* Делаем контейнер опорной точкой для абсолютного позиционирования детей. */
+    position: relative;
+}
+
+.banner .slider {
+    /* Слайдер вынимаем из потока и ставим поверх сцены. */
+    position: absolute;
+    width: 200px;
+    height: 250px;
+    /* Размещаем ближе к верху экрана (чтобы снизу осталось место под заголовок/модель). */
+    top: 10%;
+    /* Центрируем: 50% минус половина ширины (200px / 2 = 100px). */
+    left: calc(50% - 100px);
+    /*
+      Включаем "настоящее" 3D для вложенных элементов.
+      Без `preserve-3d` браузер сплющит детей в плоскость и кольцо не получится.
+    */
+    transform-style: preserve-3d;
+    /*
+      Задаём перспективу (глубину камеры).
+      Чем меньше значение — тем сильнее "искажение" и заметнее глубина.
+    */
+    transform: perspective(1000px);
+    /* Вращаем всю конструкцию бесконечно. */
+    animation: autoRun 20s linear infinite;
+    /* Поднимаем слой выше фоновой "модели", но ниже части текста при необходимости. */
+    z-index: 2;
+}
+
+@keyframes autoRun {
+    from {
+        /*
+          Стартовое положение:
+          - лёгкий наклон по X (чтобы было видно "кольцо" сверху)
+          - вращение по Y с 0 градусов.
+        */
+        transform: perspective(1000px) rotateX(-16deg) rotateY(0deg);
+    }
+
+    to {
+        /* Полный оборот по Y = 360deg. */
+        transform: perspective(1000px) rotateX(-16deg) rotateY(360deg);
+    }
+}
+
+.banner .slider .item {
+    /*
+      Каждый item кладём один на другой (inset: 0),
+      а затем:
+      1) поворачиваем вокруг оси Y на нужный угол
+      2) выталкиваем вперёд по оси Z, формируя кольцо.
+
+      Переменные:
+      - `--position`: номер элемента (1..N) из inline-style в HTML
+      - `--quantity`: общее количество элементов (N) из `.slider` в HTML
+
+      `* 1deg` нужно, чтобы результат `calc()` имел тип угла (deg).
+    */
+    position: absolute;
+    inset: 0 0 0 0;
+    transform:
+        rotateY(calc((var(--position) - 1) * (360 / var(--quantity) * 1deg))) translateZ(550px);
+}
+
+.banner .slider .item img {
+    /* Растягиваем картинку точно под карточку. */
+    width: 100%;
+    height: 100%;
+    /* Обрезаем изображение без искажений, заполняя весь блок. */
+    object-fit: cover;
+
+}
+
+.banner .content {
+    /*
+      Текстовый/контентный слой поверх сцены.
+      Абсолютно позиционируем и центрируем по X, чтобы не зависеть от ширины экрана.
+    */
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Ограничиваем максимальную ширину, но не больше ширины viewport. */
+    width: min(1400px, 100vw);
+    height: max-content;
+    /* Поднимаем контент чуть выше низа — визуальный "воздух". */
+    padding-bottom: 100px;
+    /* Flex нужен, чтобы разложить H1 и блок автора по краям. */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    /* Важно: контент выше фоновой картинки `.model`. */
+    z-index: 1;
+}
+
+.banner .content h1 {
+    /* Крупный заголовок с кастомным шрифтом. */
+    font-family: 'ICA Rubrik';
+    font-size: 16em;
+    line-height: 1em;
+    color: #25283B;
+    /* Нужно, чтобы `::after` позиционировался относительно самого заголовка. */
+    position: relative;
+}
+
+.banner .content h1::after {
+    /*
+      Второй слой текста поверх первого:
+      - `content: attr(data-content)` берёт строку из атрибута `data-content` в HTML
+      - делаем прозрачную заливку и рисуем только обводку (`text-stroke`)
+      Это создаёт эффект "двойного" текста без второй реальной строки в DOM.
+    */
+    position: absolute;
+    inset: 0 0 0 0;
+    content: attr(data-content);
+    z-index: 2;
+    -webkit-text-stroke: 2px #d2d2d2;
+    color: transparent;
+}
+
+
+
+.banner .content .author {
+    /* Блок автора/подписи справа. */
+    font-family: 'Poppins';
+    text-align: right;
+    max-width: 200px;
+}
+
+.banner .content h2 {
+    font-size: 2em;
+}
+
+.banner .content .model {
+    /*
+      Фоновая "модель" внизу:
+      - делаем её абсолютно позиционированной
+      - картинка как background, чтобы удобнее было управлять масштабом/позиционированием
+      - `z-index: 0`, чтобы она была под текстом и под слайдером
+    */
+    background-image: url(img/model.png);
+    width: 100%;
+    height: 75vh;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    /* Масштабируем по высоте (130%), ширина авто — сохраняем пропорции. */
+    background-size: auto 130%;
+    background-repeat: no-repeat;
+    background-position: top center;
+    z-index: 0;
+}

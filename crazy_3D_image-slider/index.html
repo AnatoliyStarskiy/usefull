@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!--
+        Важно для корректного рендера в браузере:
+        - `charset` задаёт кодировку (чтобы текст отображался правильно).
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+        `viewport` нужен, чтобы на мобильных страница не "масштабировалась" как десктопная
+        (иначе размеры/позиционирование будут выглядеть не так, как задумано).
+    -->
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Подключаем CSS, в котором вся анимация и 3D-эффект сделаны без JS. -->
+</head>
+
+<body>
+    <!--
+        `.banner` — основной контейнер-«сцена»:
+        - на всю высоту экрана
+        - внутри живут 3D-слайдер и контент/фон.
+    -->
+    <div class="banner">
+        <!--
+            `.slider` — 3D-карусель.
+            CSS-переменная `--quantity` сообщает стилям, сколько элементов участвует в круге.
+            Это важно для вычисления угла поворота каждого `.item`.
+        -->
+        <div class="slider" style="--quantity: 10">
+            <!--
+                Каждый `.item` получает свою позицию через `--position` (1..N).
+                Далее в CSS мы поворачиваем элемент на угол:
+                (position-1) * (360/quantity)
+                и выталкиваем его по Z (`translateZ`), чтобы получить кольцо в 3D.
+            -->
+            <div class="item" style="--position: 1">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 2">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 3">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 4">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 5">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 6">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 7">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 8">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 9">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+            <div class="item" style="--position: 10">
+                <img src="img/dragon-241123-1.jpg" alt="">
+            </div>
+        </div>
+
+        <!--
+            `.content` — текстовый слой поверх сцены.
+            Он центрируется по горизонтали, прижат к низу и имеет `z-index` выше фона.
+        -->
+        <div class="content">
+            <!--
+                `data-content` используется в CSS для псевдо-элемента `::after`.
+                Это позволяет нарисовать "обводку" текста поверх заливки,
+                не дублируя строку вручную в разметке.
+            -->
+            <h1 data-content="CSS ONLY">
+                CSS ONLY
+            </h1>
+            <div class="author">
+                <h2>
+                    LUN DEV
+                </h2>
+                <p><b>Web Desingn</b></p>
+                <p>Subscribe to the channel to watch</p>
+            </div>
+            <!--
+                `.model` — пустой div, который служит "держателем" фоновой картинки в CSS.
+                Так проще контролировать позиционирование/масштабирование, чем через `<img>`.
+            -->
+            <div class="model">
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
